@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RODCAS — Herramientas para el trabajo</title>
+  <meta name="description" content="Herramientas independientes para profesionales. Prompto y BIMifica.">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f7f7f8;
+      --surface: #f0f0f2;
+      --border: #e4e4e7;
+      --text: #111118;
+      --text-2: #52525b;
+      --text-3: #a1a1aa;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --badge-chrome-bg: #e8f0fe;
+      --badge-chrome-text: #1a56db;
+      --badge-desktop-bg: #fef3c7;
+      --badge-desktop-text: #b45309;
+      --badge-free-bg: #dcfce7;
+      --badge-free-text: #15803d;
+      --badge-pro-bg: #fae8ff;
+      --badge-pro-text: #9333ea;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+      --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.10);
+      --radius: 12px;
+    }
+    [data-theme="dark"] {
+      --bg: #0f0f11;
+      --bg-alt: #18181b;
+      --surface: #27272a;
+      --border: #3f3f46;
+      --text: #fafafa;
+      --text-2: #a1a1aa;
+      --text-3: #52525b;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --badge-chrome-bg: #1e3a5f;
+      --badge-chrome-text: #93c5fd;
+      --badge-desktop-bg: #422006;
+      --badge-desktop-text: #fcd34d;
+      --badge-free-bg: #14532d;
+      --badge-free-text: #86efac;
+      --badge-pro-bg: #3b0764;
+      --badge-pro-text: #d8b4fe;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background .2s, color .2s;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(8px);
+    }
+    .nav-brand {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -.01em;
+    }
+    .nav-end { display: flex; align-items: center; gap: 8px; }
+
+    /* LANG / THEME TOGGLES */
+    .pill-toggle {
+      display: flex;
+      background: var(--surface);
+      border-radius: 99px;
+      padding: 2px;
+      gap: 0;
+    }
+    .pill-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-2);
+      font-size: .8rem;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      line-height: 1.4;
+    }
+    .pill-btn.active {
+      background: var(--bg);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    }
+    .icon-btn {
+      border: none;
+      background: var(--surface);
+      color: var(--text-2);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+    }
+    .icon-btn:hover { background: var(--border); }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* HERO */
+    .hero {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 80px 24px 64px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--badge-chrome-bg);
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+      letter-spacing: .02em;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-2);
+      white-space: nowrap;
+      margin: 0 auto;
+    }
+
+    /* PROJECTS */
+    .projects {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 96px;
+    }
+    .section-title {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 24px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--card-shadow);
+      transition: box-shadow .2s, transform .2s, border-color .2s;
+      cursor: default;
+    }
+    .card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-icon svg { width: 20px; height: 20px; }
+    .card-badges { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+    .badge {
+      font-size: .72rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+    .badge-chrome  { background: var(--badge-chrome-bg);  color: var(--badge-chrome-text); }
+    .badge-desktop { background: var(--badge-desktop-bg); color: var(--badge-desktop-text); }
+    .badge-free    { background: var(--badge-free-bg);    color: var(--badge-free-text); }
+    .badge-pro     { background: var(--badge-pro-bg);     color: var(--badge-pro-text); }
+
+    .card-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.01em;
+    }
+    .card-desc {
+      font-size: .88rem;
+      color: var(--text-2);
+      line-height: 1.55;
+      flex: 1;
+    }
+    .card-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .card-features li {
+      font-size: .82rem;
+      color: var(--text-2);
+      padding-left: 14px;
+      position: relative;
+    }
+    .card-features li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .card-footer {
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: .8rem;
+      color: var(--text-3);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: .8rem;
+    }
+    .card-link:hover { text-decoration: underline; }
+    .card-link--soon {
+      color: var(--text-3);
+      font-size: .8rem;
+    }
+    .card-footer-sep { color: var(--border); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    footer p { font-size: .82rem; color: var(--text-3); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .hero { padding: 48px 20px 40px; }
+      .projects { padding: 0 20px 64px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="#">RODCAS</a>
+    <div class="nav-end">
+      <div class="pill-toggle" role="group" aria-label="Idioma / Language">
+        <button class="pill-btn active" data-lang="es" onclick="setLang('es')">ES</button>
+        <button class="pill-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="icon-btn" onclick="toggleTheme()" aria-label="Cambiar tema" id="theme-btn">
+        <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <span class="hero-eyebrow" data-i18n="eyebrow">Herramientas independientes</span>
+    <h1 data-i18n="heroTitle">Software para<br>el trabajo</h1>
+    <p data-i18n="heroSub">Aplicaciones y extensiones diseñadas para simplificar flujos de trabajo reales.</p>
+  </section>
+
+  <section class="projects">
+    <p class="section-title" data-i18n="sectionTitle">Proyectos</p>
+    <div class="cards">
+
+      <!-- Prompto Free -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="card-badges">
+            <span class="badge badge-chrome" data-i18n="badgeChrome">Chrome</span>
+            <span class="badge badge-free" data-i18n="badgeFree">Free</span>
+          </div>
+        </div>
+        <div class="card-name">Prompto Free</div>
+        <p class="card-desc" data-i18n="promptoFreeDesc">Guarda y reutiliza tus prompts favoritos directamente desde el navegador.</p>
+        <ul class="card-features">
+          <li data-i18n="f1free">Hasta 7 prompts y 3 categorías</li>
+          <li data-i18n="f2free">Búsqueda y filtrado por categoría</li>
+          <li data-i18n="f3free">Importar y exportar en JSON</li>
+          <li data-i18n="f4free">Tema claro y oscuro · ES / EN</li>
+        </ul>
+        <div class="card-footer">
+          <!-- TODO: reemplazar href con la URL de Chrome Web Store cuando esté publicada -->
+          <span class="card-link--soon" data-i18n="comingSoon">Próximamente en Chrome Web Store</span>
+        </div>
+      </div>
+
+      <!-- Prompto Pro -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="card-badges">
+            <span class="badge badge-chrome" data-i18n="badgeChrome">Chrome</span>
+            <span class="badge badge-pro" data-i18n="badgePro">Pro</span>
+          </div>
+        </div>
+        <div class="card-name">Prompto Pro</div>
+        <p class="card-desc" data-i18n="promptoProDesc">Prompts ilimitados con inserción directa en cualquier campo de texto mediante clic derecho.</p>
+        <ul class="card-features">
+          <li data-i18n="f1pro">Prompts y categorías ilimitados</li>
+          <li data-i18n="f2pro">Menú contextual con clic derecho</li>
+          <li data-i18n="f3pro">Compatible con ChatGPT, Claude, Gemini</li>
+          <li data-i18n="f4pro">Soporte para iframes y Shadow DOM</li>
+        </ul>
+        <div class="card-footer">
+          <a href="https://rodcasdev.gumroad.com/l/vgcdic" target="_blank" rel="noopener" class="card-link" data-i18n="buyGumroad">Comprar en Gumroad</a>
+          <span class="card-footer-sep">·</span>
+          <!-- TODO: reemplazar el span por un <a> con la URL de Chrome Web Store cuando esté publicada -->
+          <span class="card-link--soon" data-i18n="comingSoon">Próximamente en Chrome Web Store</span>
+        </div>
+      </div>
+
+      <!-- BIMifica -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h.01M7 12h10M7 10h5"/></svg>
+          </div>
+          <div class="card-badges">
+            <span class="badge badge-desktop" data-i18n="badgeDesktop">Windows</span>
+          </div>
+        </div>
+        <div class="card-name">BIMifica</div>
+        <p class="card-desc" data-i18n="bimificaDesc">Asistente para estandarizar y renombrar archivos BIM conforme a nomenclaturas profesionales internacionales.</p>
+        <ul class="card-features">
+          <li data-i18n="f1bim">Renombrado en lote con previsualización</li>
+          <li data-i18n="f2bim">100+ tipos de documento y 60+ disciplinas</li>
+          <li data-i18n="f3bim">Windows, macOS y Linux</li>
+          <li data-i18n="f4bim">Sin conexión requerida</li>
+        </ul>
+        <div class="card-footer">
+          <a href="https://rodcasdev.gumroad.com/l/zqhcz" target="_blank" rel="noopener" class="card-link" data-i18n="availableGumroad">Disponible en Gumroad</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      <span data-i18n="footerBy">Desarrollado por</span>
+      RODCAS &nbsp;·&nbsp;
+      <a href="mailto:rodcas.dev@gmail.com">rodcas.dev@gmail.com</a>
+    </p>
+  </footer>
+
+  <script>
+    const I18N = {
+      es: {
+        eyebrow: 'Herramientas independientes',
+        heroTitle: 'Software para<br>el trabajo',
+        heroSub: 'Aplicaciones y extensiones diseñadas para simplificar flujos de trabajo reales.',
+        sectionTitle: 'Proyectos',
+        badgeChrome: 'Chrome',
+        badgeFree: 'Gratis',
+        badgePro: 'Pro',
+        badgeDesktop: 'Escritorio',
+        promptoFreeDesc: 'Guarda y reutiliza tus prompts favoritos directamente desde el navegador.',
+        promptoProDesc: 'Prompts ilimitados con inserción directa en cualquier campo de texto mediante clic derecho.',
+        bimificaDesc: 'Asistente para estandarizar y renombrar archivos BIM conforme a nomenclaturas profesionales internacionales.',
+        f1free: 'Hasta 7 prompts y 3 categorías',
+        f2free: 'Búsqueda y filtrado por categoría',
+        f3free: 'Importar y exportar en JSON',
+        f4free: 'Tema claro y oscuro · ES / EN',
+        f1pro: 'Prompts y categorías ilimitados',
+        f2pro: 'Menú contextual con clic derecho',
+        f3pro: 'Compatible con ChatGPT, Claude, Gemini',
+        f4pro: 'Soporte para iframes y Shadow DOM',
+        f1bim: 'Renombrado en lote con previsualización',
+        f2bim: '100+ tipos de documento y 60+ disciplinas',
+        f3bim: 'Solo para Windows',
+        f4bim: 'Sin conexión requerida',
+        buyGumroad: 'Comprar en Gumroad',
+        comingSoon: 'Próximamente en Chrome Web Store',
+        availableGumroad: 'Disponible en Gumroad',
+        footerBy: 'Desarrollado por',
+      },
+      en: {
+        eyebrow: 'Independent tools',
+        heroTitle: 'Software for<br>everyday work',
+        heroSub: 'Apps and extensions designed to simplify real-world workflows.',
+        sectionTitle: 'Projects',
+        badgeChrome: 'Chrome',
+        badgeFree: 'Free',
+        badgePro: 'Pro',
+        badgeDesktop: 'Windows',
+        promptoFreeDesc: 'Save and reuse your favourite prompts directly from the browser.',
+        promptoProDesc: 'Unlimited prompts with direct insertion into any text field via right-click.',
+        bimificaDesc: 'Assistant for standardising and renaming BIM files according to international professional naming conventions.',
+        f1free: 'Up to 7 prompts and 3 categories',
+        f2free: 'Search and filter by category',
+        f3free: 'Import and export as JSON',
+        f4free: 'Light and dark theme · ES / EN',
+        f1pro: 'Unlimited prompts and categories',
+        f2pro: 'Context menu via right-click',
+        f3pro: 'Works with ChatGPT, Claude, Gemini',
+        f4pro: 'Supports iframes and Shadow DOM',
+        f1bim: 'Batch renaming with live preview',
+        f2bim: '100+ document types and 60+ disciplines',
+        f3bim: 'Windows only',
+        f4bim: 'No internet connection required',
+        buyGumroad: 'Buy on Gumroad',
+        comingSoon: 'Coming soon to Chrome Web Store',
+        availableGumroad: 'Available on Gumroad',
+        footerBy: 'Developed by',
+      },
+    };
+
+    let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('en') ? 'en' : 'es');
+    let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.documentElement.lang = lang;
+      const t = I18N[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      document.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+    }
+
+    function setLang(lang) { applyLang(lang); }
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('theme', theme);
+      document.documentElement.dataset.theme = theme;
+      document.getElementById('icon-sun').style.display  = theme === 'dark'  ? 'none'  : 'block';
+      document.getElementById('icon-moon').style.display = theme === 'light' ? 'none'  : 'block';
+    }
+
+    function toggleTheme() {
+      applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+    }
+
+    applyLang(currentLang);
+    applyTheme(currentTheme);
+  </script>
+</body>
+</html>
